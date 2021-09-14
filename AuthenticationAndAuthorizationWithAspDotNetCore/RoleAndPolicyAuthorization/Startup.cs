@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using RoleAndPolicyAuthorization.AuthorizationHandlers;
 using System.Security.Claims;
 
 namespace RoleAndPolicyAuthorization
@@ -31,13 +32,17 @@ namespace RoleAndPolicyAuthorization
 
             services.AddAuthorization(config =>
             {
-                config.AddPolicy("Claim.DOB", policyBuilder =>
+                config.AddPolicy("Claim.Email", policyBuilder =>
                 {
-                    policyBuilder.AddRequirements(new CustomRequirementClaim(ClaimTypes.DateOfBirth));
+                    policyBuilder.RequireCustomClaim(ClaimTypes.Email);
+                });
+                config.AddPolicy("Admin", policyBuilder =>
+                {
+                    policyBuilder.RequireCustomClaim(ClaimTypes.Role);
                 });
             });
 
-            services.AddScoped<IAuthorizationHandler, CustomRequirementClaimHandler>();
+            services.AddSingleton<IAuthorizationHandler, CustomRequirementClaimHandler>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -51,6 +56,8 @@ namespace RoleAndPolicyAuthorization
             app.UseHttpsRedirection();
 
             app.UseRouting();
+
+            app.UseAuthentication();
 
             app.UseAuthorization();
 

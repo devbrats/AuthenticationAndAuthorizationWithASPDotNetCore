@@ -33,24 +33,33 @@ namespace RoleAndPolicyAuthorization.Controllers
         }
 
         [HttpGet("login")]
-        public string Login()
+        public async Task<string> Login()
         {
             var claims = new List<Claim>()
             {
                 new Claim(ClaimTypes.Name,"Dev"),
                 new Claim(ClaimTypes.Email,"test@test.com"),
-                //new Claim(ClaimTypes.DateOfBirth,"11/11/2000"),
+                new Claim(ClaimTypes.Role, "Admin")
             };
 
-            var identity = new ClaimsIdentity(claims, "TestUserIdentity");
+            var identity = new ClaimsIdentity(claims, "UserIdentity");
 
             var userPrincipal = new ClaimsPrincipal(new ClaimsIdentity[] { identity });
-            HttpContext.SignInAsync(userPrincipal);
+
+            await HttpContext.SignInAsync(userPrincipal);
 
             return "User Authenticated";
         }
 
-        [Authorize(Policy = "Claim.DOB")]
+        [HttpGet("logout")]
+        public async Task<IActionResult> LogOut()
+        {
+            await HttpContext.SignOutAsync();
+
+            return RedirectToAction("index");
+        }
+
+        [Authorize(Policy = "Claim.Email")]
         [HttpGet]
         public IEnumerable<WeatherForecast> Get()
         {
@@ -62,6 +71,13 @@ namespace RoleAndPolicyAuthorization.Controllers
                 Summary = Summaries[rng.Next(Summaries.Length)]
             })
             .ToArray();
+        }
+
+        [Authorize(Roles = "Admin")]
+        [HttpGet("admin")]
+        public string Get_1()
+        {
+            return "Admin Page";
         }
     }
 }
