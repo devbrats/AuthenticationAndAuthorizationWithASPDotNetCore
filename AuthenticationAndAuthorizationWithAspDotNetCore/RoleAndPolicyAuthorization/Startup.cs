@@ -5,6 +5,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using RoleAndPolicyAuthorization.AuthorizationHandlers;
+using RoleAndPolicyAuthorization.Models;
 using System.Security.Claims;
 
 namespace RoleAndPolicyAuthorization
@@ -26,8 +27,8 @@ namespace RoleAndPolicyAuthorization
             services.AddAuthentication("CookieAuth")
               .AddCookie("CookieAuth", config =>
               {
-                  config.Cookie.Name = "TestCookie";
-                  config.LoginPath = "/WeatherForecast/index";
+                  config.Cookie.Name = "MyAppCookie";
+                  config.LoginPath = "/api/home";
               });
 
             services.AddAuthorization(config =>
@@ -43,6 +44,7 @@ namespace RoleAndPolicyAuthorization
             });
 
             services.AddSingleton<IAuthorizationHandler, CustomRequirementClaimHandler>();
+            services.AddSwaggerGen();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -53,14 +55,22 @@ namespace RoleAndPolicyAuthorization
                 app.UseDeveloperExceptionPage();
             }
 
+            app.UseSwagger(c =>
+            {
+                c.SerializeAsV2 = true;
+            });
+
+            // Enable middleware to serve swagger-ui (HTML, JS, CSS, etc.),
+            // specifying the Swagger JSON endpoint.
+            app.UseSwaggerUI(c =>
+            {
+                c.SwaggerEndpoint("/swagger/v1/swagger.json", "My API V1");
+            });
+
             app.UseHttpsRedirection();
-
             app.UseRouting();
-
             app.UseAuthentication();
-
             app.UseAuthorization();
-
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapControllers();

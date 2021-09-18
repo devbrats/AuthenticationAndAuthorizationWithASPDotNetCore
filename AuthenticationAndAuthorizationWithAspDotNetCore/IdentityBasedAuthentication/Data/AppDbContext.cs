@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace IdentityBasedAuthentication.Data
 {
-    public class AppDbContext : IdentityDbContext<TestUser>
+    public class AppDbContext : IdentityDbContext<AppUser>
     {
         public AppDbContext(DbContextOptions<AppDbContext> options)
             : base(options)

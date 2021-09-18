@@ -1,6 +1,6 @@
 using System;
 
-namespace RoleAndPolicyAuthorization
+namespace CookieBasedAuthentication.Models
 {
     public class WeatherForecast
     {

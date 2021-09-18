@@ -1,18 +1,11 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using IdentityBasedAuthentication.Data;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.HttpsPolicy;
 using Microsoft.AspNetCore.Identity;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using Microsoft.Extensions.Logging;
 
 namespace IdentityBasedAuthentication
 {
@@ -30,18 +23,19 @@ namespace IdentityBasedAuthentication
         {
             services.AddControllers();
 
-            services.AddDbContext<AppDbContext>(opt =>
-                                              opt.UseInMemoryDatabase("AppDB"));
+            services.AddDbContext<AppDbContext>(opt => opt.UseInMemoryDatabase("AppDB"));
 
-            services.AddIdentity<TestUser, IdentityRole>(config=> {
+            services.AddIdentity<AppUser, IdentityRole>(config=> {
                 config.Password.RequiredLength = 3;
                 config.Password.RequireDigit = false;
                 config.Password.RequireNonAlphanumeric = false;
                 config.Password.RequireUppercase = false;
             })
                 .AddEntityFrameworkStores<AppDbContext>()
-                .AddSignInManager<SignInManager<TestUser>>()
+                .AddSignInManager<SignInManager<AppUser>>()
                 .AddDefaultTokenProviders();
+
+            services.AddSwaggerGen();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -52,12 +46,21 @@ namespace IdentityBasedAuthentication
                 app.UseDeveloperExceptionPage();
             }
 
+            app.UseSwagger(c =>
+            {
+                c.SerializeAsV2 = true;
+            });
+
+            // Enable middleware to serve swagger-ui (HTML, JS, CSS, etc.),
+            // specifying the Swagger JSON endpoint.
+            app.UseSwaggerUI(c =>
+            {
+                c.SwaggerEndpoint("/swagger/v1/swagger.json", "My API V1");
+            });
+
             app.UseHttpsRedirection();
-
             app.UseRouting();
-
             app.UseAuthentication();
-
             app.UseAuthorization();
 
             app.UseEndpoints(endpoints =>

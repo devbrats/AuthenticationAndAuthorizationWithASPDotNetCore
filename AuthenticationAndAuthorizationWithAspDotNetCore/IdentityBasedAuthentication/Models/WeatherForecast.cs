@@ -1,6 +1,6 @@
 using System;
 
-namespace IdentityBasedAuthentication
+namespace IdentityBasedAuthentication.Models
 {
     public class WeatherForecast
     {
