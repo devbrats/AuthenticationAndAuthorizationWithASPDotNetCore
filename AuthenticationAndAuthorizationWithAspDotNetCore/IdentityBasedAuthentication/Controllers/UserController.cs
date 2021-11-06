@@ -1,5 +1,5 @@
-﻿using IdentityBasedAuthentication.Data;
-using IdentityBasedAuthentication.Models;
+﻿using AA.Common.Models;
+using IdentityBasedAuthentication.Data;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using System.Threading.Tasks;
@@ -10,25 +10,31 @@ namespace IdentityBasedAuthentication.Controllers
     [ApiController]
     public class UserController : ControllerBase
     {
-        private UserManager<AppUser> _userManager;
-        private SignInManager<AppUser> _signInManager;
+        private UserManager<AppIdUser> _userManager;
+        private SignInManager<AppIdUser> _signInManager;
 
-        public UserController( UserManager<AppUser> userManager, SignInManager<AppUser> signInManager)
+        public UserController( UserManager<AppIdUser> userManager, SignInManager<AppIdUser> signInManager)
         {
             _userManager = userManager;
             _signInManager = signInManager;
         }
 
-        [HttpPost("login")]
-        public async Task<IActionResult> Login(string userName, string password)
+        [HttpGet]
+        public IActionResult Index()
         {
-            var user = (AppUser)await _userManager.FindByNameAsync(userName);
+            return Ok("Index");
+        }
+
+        [HttpPost("login")]
+        public async Task<IActionResult> Login([FromBody] UserCredentials userCredentials)
+        {
+            var user = (AppIdUser)await _userManager.FindByEmailAsync(userCredentials.UserName);
             if (user != null)
             {
-                var res = await _signInManager.PasswordSignInAsync(user, password, false, false);
+                var res = await _signInManager.PasswordSignInAsync(user, userCredentials.Password, false, false);
                 if (res.Succeeded)
                 {
-                    return Ok("User Authenticated " + user);
+                    return Ok("User Authenticated " + user.ToString());
                 }
             }
             return NotFound();
@@ -39,13 +45,13 @@ namespace IdentityBasedAuthentication.Controllers
         public async Task<IActionResult> LogOut()
         {
             await _signInManager.SignOutAsync();
-            return Redirect("~/api/Home");
+            return Redirect("~/api/User");
         }
 
         [HttpPost("register")]
-        public async Task<IActionResult> Register(UserRegistrationDetails userRegistrationDetails)
+        public async Task<IActionResult> Register([FromBody]UserRegistrationDetails userRegistrationDetails)
         {
-            var user = new AppUser()
+            var user = new AppIdUser()
             {
                 UserName = userRegistrationDetails.Name,
                 Email = userRegistrationDetails.EmailID,

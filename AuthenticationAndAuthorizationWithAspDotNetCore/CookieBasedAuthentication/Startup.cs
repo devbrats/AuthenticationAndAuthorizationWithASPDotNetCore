@@ -32,7 +32,7 @@ namespace CookieBasedAuthentication
             services.AddAuthentication("CookieAuth")
                 .AddCookie("CookieAuth", config =>
                 {
-                    config.Cookie.Name = "TestCookie";
+                    config.Cookie.Name = "WeatherForecastCookie";
                     config.LoginPath = "/WeatherForecast/authenticate";
                 });
         }

@@ -25,14 +25,14 @@ namespace IdentityBasedAuthentication
 
             services.AddDbContext<AppDbContext>(opt => opt.UseInMemoryDatabase("AppDB"));
 
-            services.AddIdentity<AppUser, IdentityRole>(config=> {
+            services.AddIdentity<AppIdUser, IdentityRole>(config=> {
                 config.Password.RequiredLength = 3;
                 config.Password.RequireDigit = false;
                 config.Password.RequireNonAlphanumeric = false;
                 config.Password.RequireUppercase = false;
             })
                 .AddEntityFrameworkStores<AppDbContext>()
-                .AddSignInManager<SignInManager<AppUser>>()
+                .AddSignInManager<SignInManager<AppIdUser>>()
                 .AddDefaultTokenProviders();
 
             services.AddSwaggerGen();

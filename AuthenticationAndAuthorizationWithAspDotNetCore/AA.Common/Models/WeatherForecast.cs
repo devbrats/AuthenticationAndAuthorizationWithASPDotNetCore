@@ -1,6 +1,6 @@
 using System;
 
-namespace RoleAndPolicyAuthorization.Models
+namespace AA.Common.Models
 {
     public class WeatherForecast
     {

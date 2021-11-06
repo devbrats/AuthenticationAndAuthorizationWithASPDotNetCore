@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace IdentityBasedAuthentication.Models
+namespace AA.Common.Models
 {
     public class UserRegistrationDetails
     {

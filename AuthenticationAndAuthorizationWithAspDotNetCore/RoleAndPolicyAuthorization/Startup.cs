@@ -5,7 +5,6 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using RoleAndPolicyAuthorization.AuthorizationHandlers;
-using RoleAndPolicyAuthorization.Models;
 using System.Security.Claims;
 
 namespace RoleAndPolicyAuthorization
@@ -27,8 +26,8 @@ namespace RoleAndPolicyAuthorization
             services.AddAuthentication("CookieAuth")
               .AddCookie("CookieAuth", config =>
               {
-                  config.Cookie.Name = "MyAppCookie";
-                  config.LoginPath = "/api/home";
+                  config.Cookie.Name = "RolePolicyBasedCookie";
+                  config.LoginPath = "/api/user";
               });
 
             services.AddAuthorization(config =>

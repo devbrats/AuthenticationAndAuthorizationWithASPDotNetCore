@@ -10,5 +10,9 @@
     <PackageReference Include="Microsoft.EntityFrameworkCore.InMemory" Version="5.0.9" />
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\AA.Common\AA.Common.csproj" />
+  </ItemGroup>
+
 
 </Project>
