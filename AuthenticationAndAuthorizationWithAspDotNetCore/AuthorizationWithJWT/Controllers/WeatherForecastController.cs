@@ -4,7 +4,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Collections.Generic;
 
-namespace AAWithOAuth.Controllers
+namespace AuthorizationWithJWT.Controllers
 {
     [Authorize]
     [ApiController]

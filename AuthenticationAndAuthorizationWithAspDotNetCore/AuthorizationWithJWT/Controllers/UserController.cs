@@ -1,13 +1,13 @@
 ﻿using AA.Common.Data;
 using AA.Common.Models;
-using AAWithOAuth.Authorization;
+using AuthorizationWithJWT.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.IdentityModel.Tokens;
 using System;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 
-namespace AAWithOAuth.Controllers
+namespace AuthorizationWithJWT.Controllers
 {
     [Route("[controller]")]
     [ApiController]

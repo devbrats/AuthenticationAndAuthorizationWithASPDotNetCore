@@ -1,20 +1,19 @@
-using AAWithOAuth.Authorization;
-using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.HttpsPolicy;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
-using Microsoft.IdentityModel.Tokens;
+using Microsoft.Identity.Web;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace AAWithOAuth
+namespace AAWithAzureAD
 {
     public class Startup
     {
@@ -28,31 +27,10 @@ namespace AAWithOAuth
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddAuthentication("OAuth")
-                .AddJwtBearer("OAuth", config =>
-                {
-                    // configuring to validate token as a part of query
-                    config.Events = new JwtBearerEvents()
-                    {
-                        OnMessageReceived = context =>
-                        {
-                            if (context.Request.Query.ContainsKey("access_token"))
-                            {
-                                context.Token = context.Request.Query["access_token"];
-                            }
-
-                            return Task.CompletedTask;
-                        }
-                    };
-
-                    config.TokenValidationParameters = new TokenValidationParameters()
-                    {
-                        ValidIssuer = AuthorizationHelper.Issuer,
-                        ValidAudience = AuthorizationHelper.Audience,
-                        IssuerSigningKey = AuthorizationHelper.SymmetricKey
-                    };
-                });
             services.AddControllers();
+
+            // Configure Identity Web Authentication using Azure Active directory
+            services.AddMicrosoftIdentityWebApiAuthentication(Configuration);
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -64,9 +42,24 @@ namespace AAWithOAuth
             }
 
             app.UseHttpsRedirection();
+
             app.UseRouting();
+
             app.UseAuthentication();
-            app.UseAuthorization();
+
+            // Configure middleware to authenticate user before accessing the request.
+            app.Use(async (context, next) =>
+            {
+                if (!context.User.Identity?.IsAuthenticated ?? false)
+                {
+                    context.Response.StatusCode = 401;
+                    context.Response.WriteAsync("Invalid User !");
+                }
+                else
+                {
+                    await next();
+                }
+            });
 
             app.UseEndpoints(endpoints =>
             {

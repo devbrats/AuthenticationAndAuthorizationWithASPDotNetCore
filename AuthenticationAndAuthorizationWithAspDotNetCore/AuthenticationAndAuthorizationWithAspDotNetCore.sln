@@ -9,9 +9,11 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "IdentityBasedAuthentication
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RoleAndPolicyAuthorization", "RoleAndPolicyAuthorization\RoleAndPolicyAuthorization.csproj", "{068AC640-A25E-4A13-94A4-1AC4A7055594}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AAWithOAuth", "AAWithOAuth\AAWithOAuth.csproj", "{E0DE0F7B-B496-46DC-8244-F9C283E5C4BA}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AuthorizationWithJWT", "AuthorizationWithJWT\AuthorizationWithJWT.csproj", "{E0DE0F7B-B496-46DC-8244-F9C283E5C4BA}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AA.Common", "AA.Common\AA.Common.csproj", "{A298730E-B267-44C7-B30A-E4EE18D2DAE7}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AA.Common", "AA.Common\AA.Common.csproj", "{A298730E-B267-44C7-B30A-E4EE18D2DAE7}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AAWithAzureAD", "AAWithAzureAD\AAWithAzureAD.csproj", "{4FC9E5C1-8A06-48F2-B9F5-AD8E25813173}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -39,6 +41,10 @@ Global
 		{A298730E-B267-44C7-B30A-E4EE18D2DAE7}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{A298730E-B267-44C7-B30A-E4EE18D2DAE7}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{A298730E-B267-44C7-B30A-E4EE18D2DAE7}.Release|Any CPU.Build.0 = Release|Any CPU
+		{4FC9E5C1-8A06-48F2-B9F5-AD8E25813173}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{4FC9E5C1-8A06-48F2-B9F5-AD8E25813173}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{4FC9E5C1-8A06-48F2-B9F5-AD8E25813173}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{4FC9E5C1-8A06-48F2-B9F5-AD8E25813173}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
