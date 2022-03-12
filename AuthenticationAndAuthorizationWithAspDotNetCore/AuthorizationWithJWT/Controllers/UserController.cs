@@ -5,7 +5,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.IdentityModel.Tokens;
 using System;
 using System.IdentityModel.Tokens.Jwt;
-using System.Security.Claims;
+using System.Threading.Tasks;
 
 namespace AuthorizationWithJWT.Controllers
 {
@@ -21,21 +21,17 @@ namespace AuthorizationWithJWT.Controllers
         }
 
         [HttpPost("authenticate")]
-        public IActionResult Login([FromBody] UserCredentials userCredentials)
+        public async Task<IActionResult> Login([FromBody] UserCredentials userCredentials)
         {
-            var user = _userManager.FindUserByEmail(userCredentials.UserName);
+            var user = await _userManager.FindUserByEmail(userCredentials.UserName);
 
             if (user != null)
             {
-                bool isUserSignedIn = _userManager.SignIn(user, userCredentials.Password);
+                bool isUserSignedIn = await _userManager.SignIn(user, userCredentials.Password);
                 if (isUserSignedIn)
                 {
                     // Create claims on login
-                    var claims = new[]
-                    {
-                    new Claim(JwtRegisteredClaimNames.Sub, "test"),
-                    new Claim("UserName",userCredentials.UserName)
-                    };
+                    var claims = ClaimsGenerator.CreateJWTClaims(userCredentials.UserName);
 
                     // Create Signing Credentials
                     var signingCredentials = new SigningCredentials(AuthorizationHelper.SymmetricKey, AuthorizationHelper.Algorithm);

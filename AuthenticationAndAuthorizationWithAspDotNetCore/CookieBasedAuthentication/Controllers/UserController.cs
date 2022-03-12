@@ -3,8 +3,7 @@ using AA.Common.Services;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using System.Collections.Generic;
-using System.Security.Claims;
+using System.Threading.Tasks;
 
 namespace CookieBasedAuthentication.Controllers
 {
@@ -20,27 +19,20 @@ namespace CookieBasedAuthentication.Controllers
         }
 
         [HttpPost("authenticate")]
-        public IActionResult Login([FromBody]UserCredentials userCredentials)
+        public async Task<IActionResult> Login([FromBody]UserCredentials userCredentials)
         {
-            var user = _userManager.FindUserByEmail(userCredentials.UserName);
+            var user = await _userManager.FindUserByEmail(userCredentials.UserName);
 
             if (user != null)
             {
-                bool isUserSignedIn = _userManager.SignIn(user, userCredentials.Password);
+                bool isUserSignedIn = await _userManager.SignIn(user, userCredentials.Password);
                 if (isUserSignedIn)
                 {
                     // Create claims for cookie
-                    var claims = new List<Claim>()
-                    {
-                        new Claim(ClaimTypes.Name,user.Name),
-                        new Claim(ClaimTypes.Email,user.EmailId),
-                    };
-
-                    var identity = new ClaimsIdentity(claims, "AppUserIdentity");
-                    var userPrincipal = new ClaimsPrincipal(new ClaimsIdentity[] { identity });
+                    var claims = ClaimsGenerator.CreateClaims(user);
 
                     // Sign In
-                    HttpContext.SignInAsync(userPrincipal);
+                    await HttpContext.SignInAsync(claims);
 
                     return Ok("User Authenticated \n" + user.ToString());
 

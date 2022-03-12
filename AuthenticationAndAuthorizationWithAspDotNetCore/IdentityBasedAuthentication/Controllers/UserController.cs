@@ -25,11 +25,11 @@ namespace IdentityBasedAuthentication.Controllers
         [HttpPost("authenticate")]
         public async Task<IActionResult> Login([FromBody] UserCredentials userCredentials)
         {
-            var user = _userManager.FindUserByEmail(userCredentials.UserName);
+            var user = await _userManager.FindUserByEmail(userCredentials.UserName);
 
             if (user != null)
             {
-                bool isUserSignedIn = _userManager.SignIn(user, userCredentials.Password);
+                bool isUserSignedIn = await _userManager.SignIn(user, userCredentials.Password);
                 if (isUserSignedIn)
                 {
                     return Ok("User Authenticated " + user.ToString());
@@ -42,14 +42,14 @@ namespace IdentityBasedAuthentication.Controllers
         [HttpPost("logout")]
         public async Task<IActionResult> LogOut()
         {
-            _userManager.SignOut();
+            await _userManager.SignOut();
             return Redirect("~/api/User");
         }
 
         [HttpPost("register")]
         public async Task<IActionResult> Register([FromBody]UserRegistrationDetails userRegistrationDetails)
         {
-            var registrationResult =  _userManager.CreateUser(userRegistrationDetails);
+            var registrationResult =  await _userManager.CreateUser(userRegistrationDetails);
 
             if (registrationResult)
             {

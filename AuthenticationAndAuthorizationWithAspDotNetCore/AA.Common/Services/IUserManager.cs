@@ -1,43 +1,57 @@
 ﻿using AA.Common.Data;
 using AA.Common.Models;
 using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Text;
+using System.Threading.Tasks;
 
 namespace AA.Common.Services
 {
     public interface IUserManager
     {
-        AppUser FindUserByEmail(string emaildID);
+        Task<AppUser> FindUserByEmail(string emaildID);
 
-        bool SignIn(AppUser user, string password);
+        Task<bool> SignIn(AppUser user, string password);
 
-        void SignOut();
+        Task SignOut();
 
-        bool CreateUser(UserRegistrationDetails userRegistrationDetails);
+        Task<bool> CreateUser(UserRegistrationDetails userRegistrationDetails);
     }
 
     public class CommonUserManager : IUserManager
     {
-        public bool CreateUser(UserRegistrationDetails userRegistrationDetails)
+        public Task<bool> CreateUser(UserRegistrationDetails userRegistrationDetails)
         {
-            return false;
+            return Task.Run(() =>
+            {
+                return false;
+            });
+           
         }
 
-        public AppUser FindUserByEmail(string emaildID)
+        public Task<AppUser> FindUserByEmail(string emaildID)
         {
-            return Repository.Users.FirstOrDefault(x => x.EmailId.Equals(emaildID, StringComparison.InvariantCultureIgnoreCase));
-        }
-
-        public bool SignIn(AppUser user, string password)
-        {
-            return user != null && user.Password.Equals(password);
-        }
-
-        public void SignOut()
-        {
+            return Task.Run(() =>
+            {
+                return Repository.Users.FirstOrDefault(x => x.EmailId.Equals(emaildID, StringComparison.InvariantCultureIgnoreCase));
+            });
             
         }
+
+        public Task<bool> SignIn(AppUser user, string password)
+        {
+            return Task.Run(() =>
+            {
+                return user != null && user.Password.Equals(password);
+            });
+            
+        }
+
+        public Task SignOut()
+        {
+            return Task.Run(() =>
+            {
+            });
+        }
     }
+
 }

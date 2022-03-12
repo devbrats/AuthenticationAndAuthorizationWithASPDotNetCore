@@ -53,7 +53,7 @@ namespace AAWithAzureAD
                 if (!context.User.Identity?.IsAuthenticated ?? false)
                 {
                     context.Response.StatusCode = 401;
-                    context.Response.WriteAsync("Invalid User !");
+                    await context.Response.WriteAsync("Invalid User !");
                 }
                 else
                 {
