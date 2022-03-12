@@ -1,5 +1,5 @@
-﻿using AA.Common.Data;
-using AA.Common.Models;
+﻿using AA.Common.Models;
+using AA.Common.Services;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Mvc;
 using System.Collections.Generic;
@@ -8,29 +8,40 @@ using System.Threading.Tasks;
 
 namespace IdentityBasedAuthentication.Controllers
 {
-    [Route("api/[controller]")]
+    [Route("[controller]")]
     [ApiController]
     public class UserController : ControllerBase
     {
+        private readonly IUserManager _userManager;
+
+        public UserController(IUserManager userManager)
+        {
+            _userManager = userManager;
+        }
+
         [HttpGet]
         public IActionResult Index()
         {
             return Ok("Index");
         }
 
-        [HttpPost("login")]
+        [HttpPost("authenticate")]
         public async Task<IActionResult> Login([FromBody] UserCredentials userCredentials)
         {
             // GetUser method is simulating user authentication and returning a app user
-            var user = Repository.GetUser(userCredentials.UserName);
+            var user = _userManager.FindUserByEmail(userCredentials.UserName);
 
-            if(user!=null && user.Password.Equals(userCredentials.Password))
+            if (user != null)
             {
-                var userPrincipal = CreateClaims(user);
+                bool isUserSignedIn = _userManager.SignIn(user, userCredentials.Password);
+                if (isUserSignedIn)
+                {
+                    var userPrincipal = CreateClaims(user);
 
-                await HttpContext.SignInAsync(userPrincipal);
+                    await HttpContext.SignInAsync(userPrincipal);
 
-                return Ok("User Authenticated !\n" + user.ToString());
+                    return Ok("User Authenticated !\n" + user.ToString());
+                }
             }
             return NotFound("Invalid Credentials");
           

@@ -1,3 +1,4 @@
+using AA.Common.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -44,6 +45,7 @@ namespace RoleAndPolicyAuthorization
 
             services.AddSingleton<IAuthorizationHandler, CustomRequirementClaimHandler>();
             services.AddSwaggerGen();
+            services.AddScoped<IUserManager, CommonUserManager>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

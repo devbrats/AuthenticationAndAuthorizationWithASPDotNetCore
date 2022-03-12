@@ -7,14 +7,14 @@ using System.Collections.Generic;
 namespace RoleAndPolicyAuthorization.Controllers
 {
     [ApiController]
-    [Route("api/[controller]")]
+    [Route("[controller]")]
     public class WeatherForecastController : ControllerBase
     {
         [Authorize(Policy = "Claim.Email")]
         [HttpGet]
         public IEnumerable<WeatherForecast> Get()
         {
-            return WeatherData.Get();
+            return Repository.GetWeatherData();
         }
 
         [Authorize(Roles = "Admin")]

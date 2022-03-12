@@ -9,13 +9,13 @@ namespace CookieBasedAuthentication.Controllers
 
     [Authorize]
     [ApiController]
-    [Route("api/[controller]")]
+    [Route("[controller]")]
     public class WeatherForecastController : ControllerBase
     {
         [HttpGet]
         public IEnumerable<WeatherForecast> Get()
         {
-            return WeatherData.Get();
+            return Repository.GetWeatherData();
         }
     }
 }

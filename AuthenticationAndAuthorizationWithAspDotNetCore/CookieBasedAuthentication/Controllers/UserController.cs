@@ -1,5 +1,5 @@
-﻿using AA.Common.Data;
-using AA.Common.Models;
+﻿using AA.Common.Models;
+using AA.Common.Services;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -8,31 +8,43 @@ using System.Security.Claims;
 
 namespace CookieBasedAuthentication.Controllers
 {
-    [Route("api/[controller]")]
+    [Route("[controller]")]
     [ApiController]
     public class UserController : ControllerBase
     {
-        [HttpPost("login")]
+        private readonly IUserManager _userManager;
+
+        public UserController(IUserManager userManager)
+        {
+            _userManager = userManager;
+        }
+
+        [HttpPost("authenticate")]
         public IActionResult Login([FromBody]UserCredentials userCredentials)
         {
-            var user = Repository.GetUser(userCredentials.UserName);
+            var user = _userManager.FindUserByEmail(userCredentials.UserName);
 
-            if (user != null && user.Password.Equals(userCredentials.Password))
+            if (user != null)
             {
-                // Create claims for cookie
-                var claims = new List<Claim>()
+                bool isUserSignedIn = _userManager.SignIn(user, userCredentials.Password);
+                if (isUserSignedIn)
                 {
-                    new Claim(ClaimTypes.Name,user.Name),
-                    new Claim(ClaimTypes.Email,user.EmailId),
-                };
+                    // Create claims for cookie
+                    var claims = new List<Claim>()
+                    {
+                        new Claim(ClaimTypes.Name,user.Name),
+                        new Claim(ClaimTypes.Email,user.EmailId),
+                    };
 
-                var identity = new ClaimsIdentity(claims, "AppUserIdentity");
-                var userPrincipal = new ClaimsPrincipal(new ClaimsIdentity[] { identity });
+                    var identity = new ClaimsIdentity(claims, "AppUserIdentity");
+                    var userPrincipal = new ClaimsPrincipal(new ClaimsIdentity[] { identity });
 
-                // Sign In
-                HttpContext.SignInAsync(userPrincipal);
+                    // Sign In
+                    HttpContext.SignInAsync(userPrincipal);
 
-                return Ok("User Authenticated \n" + user.ToString());
+                    return Ok("User Authenticated \n" + user.ToString());
+
+                }
             }
 
             return NotFound("Invalid User");

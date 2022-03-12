@@ -7,7 +7,7 @@ namespace AA.Common.Data
 {
     public class Repository
     {
-        private static List<AppUser> _users = new List<AppUser>()
+        public static List<AppUser> Users = new List<AppUser>()
         {
             new AppUser()
             {
@@ -27,9 +27,20 @@ namespace AA.Common.Data
             }
         };
 
-        public static AppUser GetUser(string emailId)
+        public static IEnumerable<WeatherForecast> GetWeatherData()
         {
-            return _users.FirstOrDefault(x => x.EmailId.Equals(emailId, StringComparison.InvariantCultureIgnoreCase));
+            string[] summaries = new[]
+            {
+                "Freezing", "Bracing", "Chilly", "Cool", "Mild", "Warm", "Balmy", "Hot", "Sweltering", "Scorching"
+            };
+            var rng = new Random();
+            return Enumerable.Range(1, 5).Select(index => new WeatherForecast
+            {
+                Date = DateTime.Now.AddDays(index),
+                TemperatureC = rng.Next(-20, 55),
+                Summary = summaries[rng.Next(summaries.Length)]
+            })
+            .ToArray();
         }
     }
 }

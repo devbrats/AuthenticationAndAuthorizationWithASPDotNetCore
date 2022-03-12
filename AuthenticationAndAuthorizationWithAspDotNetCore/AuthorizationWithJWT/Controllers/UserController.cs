@@ -1,5 +1,5 @@
-﻿using AA.Common.Data;
-using AA.Common.Models;
+﻿using AA.Common.Models;
+using AA.Common.Services;
 using AuthorizationWithJWT.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.IdentityModel.Tokens;
@@ -13,38 +13,48 @@ namespace AuthorizationWithJWT.Controllers
     [ApiController]
     public class UserController : ControllerBase
     {
-        [HttpPost("login")]
+        private readonly IUserManager _userManager;
+
+        public UserController(IUserManager userManager)
+        {
+            _userManager = userManager;
+        }
+
+        [HttpPost("authenticate")]
         public IActionResult Login([FromBody] UserCredentials userCredentials)
         {
-            var user = Repository.GetUser(userCredentials.UserName);
+            var user = _userManager.FindUserByEmail(userCredentials.UserName);
 
-            if (user != null && user.Password.Equals(userCredentials.Password))
+            if (user != null)
             {
-                // Create claims on login
-                var claims = new[]
+                bool isUserSignedIn = _userManager.SignIn(user, userCredentials.Password);
+                if (isUserSignedIn)
                 {
+                    // Create claims on login
+                    var claims = new[]
+                    {
                     new Claim(JwtRegisteredClaimNames.Sub, "test"),
                     new Claim("UserName",userCredentials.UserName)
-                };
+                    };
 
-                // Create Signing Credentials
-                var signingCredentials = new SigningCredentials(AuthorizationHelper.SymmetricKey, AuthorizationHelper.Algorithm);
+                    // Create Signing Credentials
+                    var signingCredentials = new SigningCredentials(AuthorizationHelper.SymmetricKey, AuthorizationHelper.Algorithm);
 
-                // Creating Json Web Token
-                var token = new JwtSecurityToken(
-                    AuthorizationHelper.Issuer,
-                    AuthorizationHelper.Audience,
-                    claims,
-                    notBefore: DateTime.Now,
-                    expires: DateTime.Now.AddHours(1),
-                    signingCredentials
-                    );
+                    // Creating Json Web Token
+                    var token = new JwtSecurityToken(
+                        AuthorizationHelper.Issuer,
+                        AuthorizationHelper.Audience,
+                        claims,
+                        notBefore: DateTime.Now,
+                        expires: DateTime.Now.AddHours(1),
+                        signingCredentials
+                        );
 
-                var tokenJson = new JwtSecurityTokenHandler().WriteToken(token);
+                    var tokenJson = new JwtSecurityTokenHandler().WriteToken(token);
 
-                return Ok(new { token = tokenJson });
-                // This token along with keyword "Bearer" is sent in Authorization header to  validate request.
-
+                    return Ok(new { token = tokenJson });
+                    // This token along with keyword "Bearer" is sent in Authorization header to  validate request.
+                }
             }
 
             return NotFound();

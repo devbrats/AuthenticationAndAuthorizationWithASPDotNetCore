@@ -1,3 +1,4 @@
+using AA.Common.Services;
 using AuthorizationWithJWT.Authorization;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
@@ -48,6 +49,7 @@ namespace AuthorizationWithJWT
                     };
                 });
             services.AddControllers();
+            services.AddScoped<IUserManager, CommonUserManager>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

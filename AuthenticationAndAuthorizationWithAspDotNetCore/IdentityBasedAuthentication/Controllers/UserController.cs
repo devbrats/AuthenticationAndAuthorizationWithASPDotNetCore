@@ -1,22 +1,19 @@
 ﻿using AA.Common.Models;
-using IdentityBasedAuthentication.Data;
-using Microsoft.AspNetCore.Identity;
+using AA.Common.Services;
 using Microsoft.AspNetCore.Mvc;
 using System.Threading.Tasks;
 
 namespace IdentityBasedAuthentication.Controllers
 {
-    [Route("api/[controller]")]
+    [Route("[controller]")]
     [ApiController]
     public class UserController : ControllerBase
     {
-        private UserManager<AppIdUser> _userManager;
-        private SignInManager<AppIdUser> _signInManager;
+        private readonly IUserManager _userManager;
 
-        public UserController( UserManager<AppIdUser> userManager, SignInManager<AppIdUser> signInManager)
+        public UserController(IUserManager userManager)
         {
             _userManager = userManager;
-            _signInManager = signInManager;
         }
 
         [HttpGet]
@@ -25,14 +22,15 @@ namespace IdentityBasedAuthentication.Controllers
             return Ok("Index");
         }
 
-        [HttpPost("login")]
+        [HttpPost("authenticate")]
         public async Task<IActionResult> Login([FromBody] UserCredentials userCredentials)
         {
-            var user = (AppIdUser)await _userManager.FindByEmailAsync(userCredentials.UserName);
+            var user = _userManager.FindUserByEmail(userCredentials.UserName);
+
             if (user != null)
             {
-                var res = await _signInManager.PasswordSignInAsync(user, userCredentials.Password, false, false);
-                if (res.Succeeded)
+                bool isUserSignedIn = _userManager.SignIn(user, userCredentials.Password);
+                if (isUserSignedIn)
                 {
                     return Ok("User Authenticated " + user.ToString());
                 }
@@ -44,29 +42,22 @@ namespace IdentityBasedAuthentication.Controllers
         [HttpPost("logout")]
         public async Task<IActionResult> LogOut()
         {
-            await _signInManager.SignOutAsync();
+            _userManager.SignOut();
             return Redirect("~/api/User");
         }
 
         [HttpPost("register")]
         public async Task<IActionResult> Register([FromBody]UserRegistrationDetails userRegistrationDetails)
         {
-            var user = new AppIdUser()
-            {
-                UserName = userRegistrationDetails.Name,
-                Email = userRegistrationDetails.EmailID,
-                DateOfBirth = userRegistrationDetails.DateOfBirth
-            };
+            var registrationResult =  _userManager.CreateUser(userRegistrationDetails);
 
-            var registrationResult = await _userManager.CreateAsync(user, userRegistrationDetails.Password);
-
-            if (registrationResult.Succeeded)
+            if (registrationResult)
             {
                 return StatusCode(201, "User Registered Successfully.");
             }
             else
             {
-                return BadRequest(registrationResult.Errors);
+                return BadRequest();
             }
 
         }

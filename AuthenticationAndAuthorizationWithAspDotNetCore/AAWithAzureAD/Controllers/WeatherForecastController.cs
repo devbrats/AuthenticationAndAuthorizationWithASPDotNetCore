@@ -12,7 +12,7 @@ namespace AAWithAzureAD.Controllers
         [HttpGet]
         public IEnumerable<WeatherForecast> Get()
         {
-            return WeatherData.Get();
+            return Repository.GetWeatherData();
         }
     }
 }
