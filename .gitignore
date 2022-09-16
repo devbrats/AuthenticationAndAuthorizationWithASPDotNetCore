@@ -1,14 +1,4 @@
 .vscode
-AuthenticationAndAuthorizationWithAspDotNetCore/.vs/
-AuthenticationAndAuthorizationWithAspDotNetCore/AA.Common/bin/
-AuthenticationAndAuthorizationWithAspDotNetCore/AA.Common/obj/
-AuthenticationAndAuthorizationWithAspDotNetCore/CookieBasedAuthentication/bin/
-AuthenticationAndAuthorizationWithAspDotNetCore/CookieBasedAuthentication/obj/
-AuthenticationAndAuthorizationWithAspDotNetCore/IdentityBasedAuthentication/bin/
-AuthenticationAndAuthorizationWithAspDotNetCore/IdentityBasedAuthentication/obj/
-AuthenticationAndAuthorizationWithAspDotNetCore/RoleAndPolicyAuthorization/bin/
-AuthenticationAndAuthorizationWithAspDotNetCore/RoleAndPolicyAuthorization/obj/
-AuthenticationAndAuthorizationWithAspDotNetCore/AuthorizationWithJWT/bin/
-AuthenticationAndAuthorizationWithAspDotNetCore/AuthorizationWithJWT/obj/
-AuthenticationAndAuthorizationWithAspDotNetCore/AAWithAzureAD/bin/
-AuthenticationAndAuthorizationWithAspDotNetCore/AAWithAzureAD/obj/
+**/.vs/
+**/bin/*
+**/obj/*
