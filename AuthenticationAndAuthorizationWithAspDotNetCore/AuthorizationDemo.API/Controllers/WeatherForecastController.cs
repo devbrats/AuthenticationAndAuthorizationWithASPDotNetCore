@@ -1,21 +1,19 @@
-﻿using System.Collections.Generic;
 using AA.Common.Data;
 using AA.Common.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
-namespace CookieBasedAuthentication.Controllers
+namespace AuthorizationDemo.API.Controllers
 {
-
-    [Authorize]
     [ApiController]
+    [Authorize]
     [Route("[controller]")]
     public class WeatherForecastController : ControllerBase
     {
         [HttpGet]
         public IEnumerable<WeatherForecast> Get()
         {
-            return Repository.GetWeatherData();
+            return (IEnumerable<WeatherForecast>)Repository.GetWeatherData();
         }
     }
 }

@@ -1,10 +1,11 @@
 ﻿using AA.Common.Models;
 using AA.Common.Services;
+using AuthorizationDemo.API.Authorization;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Mvc;
-using System.Threading.Tasks;
+using System.Security.Claims;
 
-namespace IdentityBasedAuthentication.Controllers
+namespace AuthorizationWithJWT.Controllers
 {
     [Route("[controller]")]
     [ApiController]
@@ -26,7 +27,6 @@ namespace IdentityBasedAuthentication.Controllers
         [HttpPost("authenticate")]
         public async Task<IActionResult> Login([FromBody] UserCredentials userCredentials)
         {
-            // GetUser method is simulating user authentication and returning a app user
             var user = await _userManager.FindUserByEmail(userCredentials.UserName);
 
             if (user != null)
@@ -34,15 +34,20 @@ namespace IdentityBasedAuthentication.Controllers
                 bool isUserSignedIn = await _userManager.SignIn(user, userCredentials.Password);
                 if (isUserSignedIn)
                 {
-                    var userPrincipal = ClaimsGenerator.CreateClaims(user);
+                   Action<ClaimsPrincipal> signInHandler = null;
+                   if(ConfigurationService.AuthorizationType == AuthorizationType.RoleAndPolicy)
+                    {
+                        signInHandler = async (claims) =>
+                        {
+                            await HttpContext.SignInAsync(claims);
+                        };
+                    }
 
-                    await HttpContext.SignInAsync(userPrincipal);
-
-                    return Ok("User Authenticated !\n" + user.ToString());
+                    return AuthorizationService.Authorize(ConfigurationService.AuthorizationType, user, signInHandler);
                 }
             }
-            return NotFound("Invalid Credentials");
-          
+
+            return NotFound();
         }
 
         [HttpGet("logout")]
@@ -52,6 +57,5 @@ namespace IdentityBasedAuthentication.Controllers
 
             return Redirect("~/api/User");
         }
-
     }
 }

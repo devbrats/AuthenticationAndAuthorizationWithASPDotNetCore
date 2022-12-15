@@ -1,10 +1,9 @@
-﻿using Microsoft.Extensions.Configuration;
-using Microsoft.IdentityModel.Tokens;
+﻿using Microsoft.IdentityModel.Tokens;
 using System.Text;
 
-namespace AuthorizationWithJWT.Authorization
+namespace AuthorizationDemo.API.Authorization.JWT
 {
-    public class AuthorizationHelper
+    public class TokenMetadata
     {
         private static string _secret;
 
@@ -18,8 +17,8 @@ namespace AuthorizationWithJWT.Authorization
             Audience = configuration.GetValue<string>("JWT:Audience");
         }
 
-        public static SymmetricSecurityKey SymmetricKey 
-        { 
+        public static SymmetricSecurityKey SymmetricKey
+        {
             get
             {
                 var secretBytes = Encoding.UTF8.GetBytes(_secret);

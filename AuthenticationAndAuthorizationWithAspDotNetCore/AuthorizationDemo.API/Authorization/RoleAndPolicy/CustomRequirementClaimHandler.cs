@@ -1,8 +1,6 @@
 ﻿using Microsoft.AspNetCore.Authorization;
-using System.Linq;
-using System.Threading.Tasks;
 
-namespace RoleAndPolicyAuthorization.AuthorizationHandlers
+namespace AuthorizationDemo.API.Authorization.RoleAndPolicy
 {
     public class CustomRequirementClaimHandler : AuthorizationHandler<CustomRequirementClaim>
     {
