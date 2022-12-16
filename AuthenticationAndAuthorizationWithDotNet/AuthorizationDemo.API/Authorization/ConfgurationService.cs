@@ -7,23 +7,27 @@ using System.Security.Claims;
 
 namespace AuthorizationDemo.API.Authorization
 {
-    public enum AuthorizationType
-    {
-        JWT,
-        RoleAndPolicy
-    }
-
     public class ConfigurationService
     {
         public static AuthorizationType AuthorizationType { get; private set; }
 
         public static void ConfigureAuthenticationAndAuthorizationServices(AuthorizationType type, IServiceCollection services)
         {
-            AuthorizationType= type;
+            AuthorizationType = type ;
 
             if (type == AuthorizationType.JWT)
             {
-                services.AddAuthentication("OAuth")
+                ConfigureAuthenticationAndAuthorizationForJWT(services);
+            }
+            else
+            {
+                ConfigureAuthenticationAndAuthorizationForRoleAndPolicy(services);
+            }
+        }
+
+        private static void ConfigureAuthenticationAndAuthorizationForJWT(IServiceCollection services)
+        {
+            services.AddAuthentication("OAuth")
                 .AddJwtBearer("OAuth", config =>
                 {
                     // configuring to validate token as a part of query
@@ -47,30 +51,30 @@ namespace AuthorizationDemo.API.Authorization
                         IssuerSigningKey = TokenMetadata.SymmetricKey
                     };
                 });
-            }
-            else
+        }
+
+        private static void ConfigureAuthenticationAndAuthorizationForRoleAndPolicy(IServiceCollection services)
+        {
+            services.AddAuthentication("CookieAuth")
+                       .AddCookie("CookieAuth", config =>
+                       {
+                           config.Cookie.Name = "AuthorizationDemoAPICookie";
+                           config.LoginPath = "/user/authenticate";
+                       });
+
+            services.AddAuthorization(config =>
             {
-                services.AddAuthentication("CookieAuth")
-                        .AddCookie("CookieAuth", config =>
-                        {
-                            config.Cookie.Name = "AuthorizationDemoAPICookie";
-                            config.LoginPath = "/user/authenticate";
-                        });
-
-                services.AddAuthorization(config =>
+                config.AddPolicy("Claim.Email", policyBuilder =>
                 {
-                    config.AddPolicy("Claim.Email", policyBuilder =>
-                    {
-                        policyBuilder.RequireCustomClaim(ClaimTypes.Email);
-                    });
-                    config.AddPolicy("Admin", policyBuilder =>
-                    {
-                        policyBuilder.RequireCustomClaim(ClaimTypes.Role);
-                    });
+                    policyBuilder.RequireCustomClaim(ClaimTypes.Email);
                 });
+                config.AddPolicy("Admin", policyBuilder =>
+                {
+                    policyBuilder.RequireCustomClaim(ClaimTypes.Role);
+                });
+            });
 
-                services.AddSingleton<IAuthorizationHandler, CustomRequirementClaimHandler>();
-            }
+            services.AddSingleton<IAuthorizationHandler, CustomRequirementClaimHandler>();
         }
 
     }
