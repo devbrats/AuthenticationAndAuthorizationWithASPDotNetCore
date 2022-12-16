@@ -1,25 +1,28 @@
 ﻿using AA.Common.Models;
 using AA.Common.Services;
+using AuthenticationDemo.API.Data;
 using Microsoft.AspNetCore.Mvc;
 using System.Threading.Tasks;
 
-namespace IdentityBasedAuthentication.Controllers
+namespace AuthenticationDemo.API.Controllers
 {
     [Route("[controller]")]
     [ApiController]
     public class UserController : ControllerBase
     {
         private readonly IUserManager _userManager;
+        private readonly IRepository _repository;
 
-        public UserController(IUserManager userManager)
+        public UserController(IUserManager userManager, IRepository repository)
         {
             _userManager = userManager;
+            _repository = repository;
         }
 
         [HttpGet]
-        public IActionResult Index()
+        public IActionResult Get()
         {
-            return Ok("Index");
+            return Ok(_repository.GetUsers());
         }
 
         [HttpPost("authenticate")]

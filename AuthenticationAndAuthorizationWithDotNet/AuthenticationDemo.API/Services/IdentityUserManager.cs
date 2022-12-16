@@ -1,18 +1,17 @@
 ﻿using AA.Common.Models;
 using AA.Common.Services;
-using IdentityBasedAuthentication.Data;
+using AuthenticationDemo.API.Data;
 using Microsoft.AspNetCore.Identity;
-using System;
 using System.Threading.Tasks;
 
-namespace IdentityBasedAuthentication.Services
+namespace AuthenticationDemo.API.Services
 {
     public class IdentityUserManager : IUserManager
     {
-        private UserManager<AppIdUser> _userManager;
-        private SignInManager<AppIdUser> _signInManager;
+        private UserManager<User> _userManager;
+        private SignInManager<User> _signInManager;
 
-        public IdentityUserManager(UserManager<AppIdUser> userManager, SignInManager<AppIdUser> signInManager)
+        public IdentityUserManager(UserManager<User> userManager, SignInManager<User> signInManager)
         {
             _userManager = userManager;
             _signInManager = signInManager;
@@ -22,7 +21,7 @@ namespace IdentityBasedAuthentication.Services
         {
             return Task.Run(() =>
             {
-                var user = new AppIdUser()
+                var user = new User()
                 {
                     UserName = userRegistrationDetails.Name,
                     Email = userRegistrationDetails.EmailID,
@@ -38,7 +37,7 @@ namespace IdentityBasedAuthentication.Services
         {
             return Task.Run(() =>
             {
-                var appIdUser = (AppIdUser)_userManager.FindByEmailAsync(emaildID).Result;
+                var appIdUser = (User)_userManager.FindByEmailAsync(emaildID).Result;
                 var user = new AppUser()
                 {
                     Name = appIdUser.UserName,

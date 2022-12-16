@@ -9,7 +9,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AAWithAzureAD", "AAWithAzur
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AuthorizationDemo.API", "AuthorizationDemo.API\AuthorizationDemo.API.csproj", "{E15C2262-015E-4CD2-A6B5-761CA457E531}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "IdentityBasedAuthentication", "IdentityBasedAuthentication\IdentityBasedAuthentication.csproj", "{D6A0573C-ACA0-4B9F-81D0-84178C8F76A5}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AuthenticationDemo.API", "AuthenticationDemo.API\AuthenticationDemo.API.csproj", "{D6A0573C-ACA0-4B9F-81D0-84178C8F76A5}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

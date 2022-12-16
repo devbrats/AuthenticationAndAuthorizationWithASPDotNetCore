@@ -4,7 +4,7 @@ using AA.Common.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
-namespace IdentityBasedAuthentication.Controllers
+namespace AuthenticationDemo.API.Controllers
 {
     [Authorize]
     [ApiController]
