@@ -64,8 +64,35 @@ This Solution contains different projects depicting the use of various Authentic
 
         10. Based on the users you want to provide access to the your application you can add as many users on the need basis in azure active directory and provide access to the application by adding user for the application registration in azure portal.
 
-## AuthorizationWithJWT
-## CookieBasedAuthentication
 ## IdentityServerBasedAuthentication
+## AuthorizationWithJWT
+  1. Try to access weather foreacast data https://localhost:{portnumber}/weatherforecast, access will be denied since user is not authorized.
+  2. Enter user credential to authenticate user.
+  3. JWT token will be received in response of authentication.
+  4. Use that token in swagger to authorize.
+  5. Alternately in postman in Authorize Header add value Bearer {token} in this format.
+  6. you will able to access the data.
+## CookieBasedAuthentication
 ## Role and Policy Based Authentication
+  1. Try to access weather foreacast data https://localhost:{portnumber}/content or https://localhost:{portnumber}/content/admin, access will be denied since          user is not authorized.
+  2. Enter user credential to authenticate user.
+  3. cookie will be created in the browser or postman after successful authentication.
+  6. Based on the role of user you will be able to access the endpoint.
+
+## Dummy user data in project
+  {
+      Name = "Miles",
+      Password = "test123",
+      EmailId = "test1@test.com",
+      DateOfBirth = DateTime.Now.AddYears(-20),
+      Role =  Admin
+  },
+  {
+      Name = "Peter",
+      Password = "test123",
+      EmailId = "test2@test.com",
+      DateOfBirth = DateTime.Now.AddYears(-10),
+      Role =  Restricted
+  }
+            
 
