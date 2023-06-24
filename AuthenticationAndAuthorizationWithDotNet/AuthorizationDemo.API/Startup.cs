@@ -19,9 +19,13 @@ namespace AuthorizationDemo.API
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            TokenMetadata.Init(Configuration);
+            var authorizationScheme = Configuration.GetValue<AuthorizationType>("AuthorizationType");
+            if(authorizationScheme == AuthorizationType.JWT)
+            {
+                TokenMetadata.Init(Configuration);
+            }
 
-            ConfigurationService.ConfigureAuthenticationAndAuthorizationServices(Configuration.GetValue<AuthorizationType>("AuthorizationType"), services);
+            ConfigurationService.ConfigureAuthenticationAndAuthorizationServices(authorizationScheme, services);
 
             services.AddControllers();
 

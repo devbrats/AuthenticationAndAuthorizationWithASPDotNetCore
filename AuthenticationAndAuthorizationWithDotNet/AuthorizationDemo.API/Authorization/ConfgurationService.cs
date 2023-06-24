@@ -2,6 +2,7 @@
 using AuthorizationDemo.API.Authorization.RoleAndPolicy;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
 using System.Security.Claims;
 
@@ -30,7 +31,7 @@ namespace AuthorizationDemo.API.Authorization
             services.AddAuthentication("OAuth")
                 .AddJwtBearer("OAuth", config =>
                 {
-                    // configuring to validate token as a part of query
+                    // configuring to validate token as a part of query in browser : ${url}?access_token={token}
                     config.Events = new JwtBearerEvents()
                     {
                         OnMessageReceived = context =>
